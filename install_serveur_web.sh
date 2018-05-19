@@ -1,32 +1,40 @@
+#################################################
+# Script automatisation déploiement serveur web #
+#################################################
+
 #!/bin/bash
 
 echo "Quel est le nom du serveur? (ex: hgfr.eu)"
 read nom_serveur
+echo "Quel sera la destination des site? (default = /var/www/html/)"
+read dest_site
 
 #Variable
 vhost='/etc/apache2/sites-available/'
-rep_web='/var/www/'
-apache='service apache2'
+cmdsys='systemctl'
 
 ##<installation paquet>
-apt-get update
-apt-get upgrade
-apt-get install apache2 mysql-server php7 php7-mysql phpmyadmin
-echo -e "Installation d'apache 2, mysql server, proftpd, php5 et ses modules, phpmyadmin \t\t\t\t\t\t\t [\033[032mOK\033[030m]"
+apt update
+apt upgrade
+apt install apache2 mariadb-server php7.0 php7.0-mysql phpmyadmin
+echo -e "Installation d'apache 2, mysql server, php7 et ses modules, phpmyadmin \t\t\t\t\t\t\t [\033[032mOK\033[030m]"
 ##</installation paquet>
 
 ##<apache>
+#Activation des services
 a2enmod ssl
-	#<virtualhost>
-		cd $vhost
-		cp default default.save
-		sed -i -e "s/localhost/$nom_serveur/g" default #remplace le mot "localhost" par $nom_serveur
-		wget http://hgfr.eu/autre/example.hgfr.eu -o example.$nom_serveur
-		cp example.$nom_serveur www.$nom_serveur
-		cp example.$nom_serveur $serveur
-		sed -i -e "s/change/$nom_serveur/g" www.$nom_serveur
-		sed -i -e "s/change/$nom_serveur/g" $nom_serveur
-	#</virtualhost>
-$apache reload
-$apache restart
+	cd $vhost
+	cp default default.save
+	sed -i -e "s/localhost/$nom_serveur/g" default #remplace le mot "localhost" par $nom_serveur
+	sed -i -e "s/var/www/$dest_site/g" defaut #remplace /var/www/html/ par $dest_site
+	cp example.gthery.ovh $nom_serveur
+	cp example.$nom_serveur www.$nom_serveur
+	sed -i -e "s/change/$nom_serveur/g" www.$nom_serveur
+	sed -i -e "s/change/$nom_serveur/g" $nom_serveur
+	sed -i -e "s/change2/$dest_site/g" www.$nom_serveur
+	sed -i -e "s/change2/$dest_site/g" $nom_serveur
+a2dissite default
+a2ensite "$nom_serveur" "www.$nom_serveur"
+$cmdsys reload apache2
+$cmdsys restart apache2
 ##</apache>
