@@ -1,9 +1,0 @@
-<VirtualHost *:80>
-        ServerAdmin change@mail.fr 
-        ServerName change
-        ServerAlias www.change
-        DocumentRoot change2
-
-        ErrorLog ${APACHE_LOG_DIR}/error_change.log
-        CustomLog ${APACHE_LOG_DIR}/access_change.log combined
-</VirtualHost>
